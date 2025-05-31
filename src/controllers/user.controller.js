@@ -117,7 +117,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false,
   };
 
   return res
@@ -141,8 +141,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
+      $unset: {
+        refreshToken: 1,
       },
     },
     {
@@ -152,7 +152,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
+    secure: false,
   };
 
   return res
@@ -172,7 +172,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
   try {
     const decodedToken = jwt.verify(
-      incomingRefreshToken.process.env.REFRESH_TOKEN_SECRET
+      incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET
     );
 
     const user = await User.findById(decodedToken?._id);
@@ -187,7 +187,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
+      secure: false,
     };
 
     const { accessToken, newRefreshToken } =
@@ -226,7 +226,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   return res
-    .res(200)
+    .status(200)
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
 
@@ -354,7 +354,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
           $cond: {
             if: { $in: [req.user?._id, "$subscribers.subscriber"] },
             then: true,
-            elses: false,
+            else: false,
           },
         },
       },
@@ -387,7 +387,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
-  const user = await user.aggregate([
+  const user = await User.aggregate([
     {
       $match: {
         _id: new mongoose.Types.ObjectId(req.user._id),
