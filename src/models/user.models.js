@@ -2,7 +2,7 @@ import { compare, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose, { Schema } from "mongoose";
 
-const { sign } = jwt
+const { sign } = jwt;
 
 const userSchema = new Schema(
   {
