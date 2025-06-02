@@ -172,7 +172,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
   try {
     const decodedToken = jwt.verify(
-      incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET
+      incomingRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
     );
 
     const user = await User.findById(decodedToken?._id);
@@ -412,15 +413,16 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                     fullName: 1,
                     usernaem: 1,
                     avatar: 1,
-                  }
-                }, {
+                  },
+                },
+                {
                   $addFields: {
                     owner: {
-                      $first: "owner"
-                    }
-                  }
-                }
-              ]
+                      $first: "owner",
+                    },
+                  },
+                },
+              ],
             },
           },
         ],
@@ -429,11 +431,14 @@ const getWatchHistory = asyncHandler(async (req, res) => {
   ]);
 
   return res
-  .status(200)
-  .json(
-    new ApiResponse(200, user[0].watchHistory, "Watch history fetched successfully...")
-  )
-
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "Watch history fetched successfully..."
+      )
+    );
 });
 
 export {
@@ -447,5 +452,5 @@ export {
   getUserChannelProfile,
   getWatchHistory,
   changeCurrentPassword,
-  getCurrentUser
+  getCurrentUser,
 };
