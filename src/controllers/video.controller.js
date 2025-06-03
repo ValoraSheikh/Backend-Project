@@ -218,7 +218,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   );
 
   if (!updatedVideo) {
-    throw new ApiError(400, "Video iss not updated");
+    throw new ApiError(400, "Video is not updated");
   }
 
   return res
