@@ -20,19 +20,19 @@ const videoSchema = new Schema(
       required: true,
     },
     duration: {
-      type: Number, //Cloudinary
+      type: Number, 
       required: true,
     },
     views: {
-      type: Number, //Cloudinary
+      type: Number, 
       default: 0,
     },
     isPublished: {
-      type: Boolean, //Cloudinary
+      type: Boolean, 
       default: true,
     },
     owner: {
-      type: Schema.Types.ObjectId, //Cloudinary
+      type: Schema.Types.ObjectId, 
       ref: "User",
     },
   },

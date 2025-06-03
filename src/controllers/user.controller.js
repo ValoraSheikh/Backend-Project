@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
-import { uploadOncloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import { Subscription } from "../models/subscription.models.js";
@@ -57,8 +57,8 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar file is rquired");
   }
 
-  const avatar = await uploadOncloudinary(avatarLocalPath);
-  const coverImage = await uploadOncloudinary(coverImageLocalPath);
+  const avatar = await uploadOnCloudinary(avatarLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
 
   if (!avatar) {
     throw new ApiError(400, "Avatar file is rquired");
@@ -265,7 +265,13 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   // Todo: delete old image assignment
 
-  const avatar = await uploadOncloudinary(avartarLocalFile);
+  try {
+    await deleteFromCloudinary(user.avatar)
+  } catch (error) {
+    throw new ApiError(500, "Error while deleting the previous avatar");
+  }
+
+  const avatar = await uploadOnCloudinary(avartarLocalFile);
 
   if (!avatar.url) {
     throw new ApiError(400, "Error while uploading avatar");
@@ -293,7 +299,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Cover image file is missing");
   }
 
-  const coverImage = await uploadOncloudinary(coverImageLocalFile);
+  const coverImage = await uploadOnCloudinary(coverImageLocalFile);
 
   if (!coverImage.url) {
     throw new ApiError(400, "Error while uploading cover image");
